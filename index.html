@@ -1,25 +1,93 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Conexión interrumpida</title>
+
 <style>
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
   background: #020303;
-  color: #b5ffc5;
-  font-family: monospace;
+  color: #6cff9d;
+  font: 13px/1.5 monospace;
   overflow: hidden;
 }
 
-.scan {
+main {
+  padding: 20px 16px;
+  max-width: 750px;
+  margin: auto;
+}
+
+.header {
+  color: #ff3434;
+  font-weight: bold;
+  letter-spacing: 2px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #622;
+}
+
+h1 {
+  color: #ff3434;
+  font-size: clamp(28px, 8vw, 52px);
+  line-height: 1.1;
+  margin: 28px 0 10px;
+  text-shadow: 0 0 18px #ff000077;
+}
+
+.subtitle {
+  color: #a0a0a0;
+  margin-bottom: 22px;
+}
+
+#log {
+  height: 38vh;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+#log div {
+  margin-bottom: 4px;
+}
+
+.danger {
+  color: #ff4444;
+  font-weight: bold;
+}
+
+.progress {
+  height: 8px;
+  background: #301717;
+  margin-top: 18px;
+}
+
+#bar {
+  height: 100%;
+  width: 0;
+  background: #ff3434;
+  box-shadow: 0 0 18px red;
+  transition: width .2s;
+}
+
+#timer {
+  color: #ff3434;
+  font-size: clamp(50px, 15vw, 90px);
+  font-weight: bold;
+  text-align: center;
+  margin-top: 15px;
+}
+
+.scanlines {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 5;
+  z-index: 10;
   background: repeating-linear-gradient(
     0deg,
     transparent 0px,
@@ -29,246 +97,202 @@ body {
   );
 }
 
-.wrap {
-  padding: 22px 17px;
-  max-width: 750px;
-  margin: auto;
-}
-
-.top {
-  color: #ff4141;
-  font-size: 16px;
-  font-weight: bold;
-  letter-spacing: 2px;
-  border-bottom: 1px solid #632020;
-  padding-bottom: 14px;
-}
-
-.status {
-  color: #ff3030;
-  font-size: clamp(27px, 8vw, 52px);
-  font-weight: 900;
-  margin-top: 30px;
-  text-shadow: 0 0 20px #ff000077;
-}
-
-.sub {
-  color: #aaa;
-  margin: 12px 0 25px;
-  font-size: 14px;
-}
-
-.log {
-  height: 40vh;
-  overflow: hidden;
-  overflow-wrap: anywhere;
-  color: #62ff9a;
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.log div {
-  margin-bottom: 5px;
-}
-
-.danger {
-  color: #ff4141;
-  font-weight: bold;
-}
-
-.progress {
-  height: 8px;
-  background: #301717;
-  margin-top: 20px;
-}
-
-.bar {
-  width: 0%;
-  height: 100%;
-  background: #ff3030;
-  box-shadow: 0 0 20px red;
-  transition: width .2s;
-}
-
-.count {
-  color: #ff3030;
-  font-size: clamp(55px, 15vw, 90px);
-  font-weight: bold;
-  text-align: center;
-  margin-top: 25px;
-  text-shadow: 0 0 25px #ff000066;
-}
-
-.footer {
-  position: fixed;
-  bottom: 12px;
-  width: 100%;
-  text-align: center;
-  font-size: 10px;
-  color: #777;
-}
-
 .glitch {
-  animation: glitch .13s 3;
+  animation: glitch .12s 3;
 }
 
 @keyframes glitch {
-  0% { transform: translateX(0); filter: none; }
-  25% { transform: translateX(8px); filter: hue-rotate(100deg); }
-  50% { transform: translateX(-9px); filter: contrast(2); }
+  0% { transform: translateX(0); }
+  25% { transform: translateX(8px); filter: contrast(2); }
+  50% { transform: translateX(-8px); filter: hue-rotate(90deg); }
   75% { transform: translateX(5px); }
   100% { transform: translateX(0); }
 }
 
-#end {
+#overlay {
   display: none;
   position: fixed;
   inset: 0;
-  background: black;
-  color: #ff3030;
+  z-index: 20;
+  background: #000;
+  color: #ff3434;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   text-align: center;
   padding: 20px;
-  font-size: clamp(30px, 9vw, 65px);
-  font-weight: 900;
-  letter-spacing: 3px;
 }
 
-#end small {
+#overlay h2 {
+  font-size: clamp(26px, 8vw, 50px);
+  text-shadow: 0 0 20px #ff000077;
+}
+
+#overlay p {
+  color: #aaa;
+}
+
+#final {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 25;
+  background: #000;
+  color: #ff3434;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  font-size: clamp(28px, 9vw, 60px);
+  font-weight: bold;
+}
+
+.notice {
+  position: fixed;
+  bottom: 10px;
+  left: 0;
+  width: 100%;
+  text-align: center;
   color: #888;
-  font-size: 11px;
-  font-weight: normal;
-  letter-spacing: 0;
-  margin-top: 20px;
+  font-size: 10px;
+  z-index: 30;
 }
 </style>
 </head>
 
 <body>
-<div class="scan"></div>
 
-<main class="wrap" id="main">
-  <div class="top">SECURITY EVENT // 0x7F</div>
+<div class="scanlines"></div>
 
-  <div class="status" id="headline">
-    ANOMALÍA DETECTADA
+<main id="main">
+  <div class="header">
+    SECURITY EVENT // 0x7F
   </div>
 
-  <div class="sub" id="sub">
+  <h1 id="headline">ANOMALÍA DETECTADA</h1>
+
+  <div class="subtitle" id="subtitle">
     Monitorizando actividad de conexión...
   </div>
 
-  <div class="log" id="log"></div>
+  <div id="log"></div>
 
   <div class="progress">
-    <div class="bar" id="bar"></div>
+    <div id="bar"></div>
   </div>
 
-  <div class="count" id="count">00:15</div>
+  <div id="timer">00:15</div>
 </main>
 
-<div id="end">
-  CONEXIÓN PERDIDA
-  <small>Recreación de ciberseguridad</small>
+<div id="overlay">
+  <h2>DISPOSITIVO SIN RESPUESTA</h2>
+  <p>Comprobando estado de conexión...</p>
 </div>
 
-<div class="footer" id="footer">
+<div id="final">
+  CONEXIÓN PERDIDA
+</div>
+
+<div class="notice">
   RECREACIÓN DE CIBERSEGURIDAD
 </div>
 
 <script>
 const lines = [
-  "[00] Inicializando diagnóstico de red...",
-  "[01] Comprobando integridad...",
-  "[02] ALERTA: actividad inusual",
-  "[03] Analizando conexiones...",
-  "[04] ERROR: respuesta inesperada",
-  "[05] Verificando canales...",
-  "[06] ADVERTENCIA: conexión inestable",
-  "[07] Ejecutando diagnóstico...",
-  "[08] ERROR: fallo de sincronización",
-  "[09] Analizando registros...",
-  "[10] ALERTA: evento desconocido",
-  "[11] Verificando sesión...",
-  "[12] ERROR: validación interrumpida",
-  "[13] Reintentando conexión...",
-  "[14] ALERTA: respuesta anómala",
-  "[15] Comprobando integridad...",
-  "[16] ERROR: tiempo agotado",
-  "[17] Ejecutando recuperación...",
-  "[18] ADVERTENCIA: proceso incompleto",
-  "[19] Verificando servidor...",
-  "[20] ERROR: conexión rechazada",
-  "[21] Analizando último evento...",
-  "[22] ALERTA: sesión interrumpida",
-  "[23] Intentando recuperación final..."
+  "Inicializando diagnóstico...",
+  "Comprobando integridad de conexión...",
+  "ALERTA: actividad inusual",
+  "Analizando canales...",
+  "ERROR: respuesta inesperada",
+  "Verificando sesión...",
+  "ADVERTENCIA: conexión inestable",
+  "Ejecutando comprobación...",
+  "ERROR: sincronización interrumpida",
+  "Analizando registros...",
+  "ALERTA: evento desconocido",
+  "Verificando servidor...",
+  "ERROR: tiempo de respuesta agotado",
+  "Intentando recuperación...",
+  "ADVERTENCIA: proceso incompleto",
+  "Comprobando última conexión..."
 ];
 
+const main = document.getElementById("main");
 const log = document.getElementById("log");
 const bar = document.getElementById("bar");
-const count = document.getElementById("count");
-const headline = document.getElementById("headline");
-const sub = document.getElementById("sub");
-const main = document.getElementById("main");
+const timer = document.getElementById("timer");
+const overlay = document.getElementById("overlay");
+const finalScreen = document.getElementById("final");
 
-let i = 0;
-let n = 15;
+let elapsed = 0;
+let index = 0;
 
 function addLine() {
-  if (i >= lines.length) return;
-
   const div = document.createElement("div");
-  div.textContent = "> " + lines[i];
+  const message = lines[index % lines.length];
 
-  if (/ALERTA|ERROR|ADVERTENCIA/.test(lines[i])) {
+  div.textContent = "> [" +
+    String(index).padStart(2, "0") +
+    "] " + message;
+
+  if (/ALERTA|ERROR|ADVERTENCIA/.test(message)) {
     div.className = "danger";
   }
 
   log.appendChild(div);
   log.scrollTop = log.scrollHeight;
-  i++;
+  index++;
+}
 
-  if (i % 4 === 0) {
-    main.classList.add("glitch");
-
-    setTimeout(() => {
-      main.classList.remove("glitch");
-    }, 400);
-  }
+function glitch() {
+  main.classList.remove("glitch");
+  void main.offsetWidth;
+  main.classList.add("glitch");
 }
 
 addLine();
 
-const writer = setInterval(addLine, 350);
+const writer = setInterval(() => {
+  addLine();
 
-const ticker = setInterval(() => {
-  n--;
+  if (index % 5 === 0) {
+    glitch();
+  }
+}, 350);
 
-  count.textContent = "00:" + String(n).padStart(2, "0");
-  bar.style.width = ((15 - n) / 15 * 100) + "%";
+const clock = setInterval(() => {
+  elapsed++;
 
-  if (n === 10) {
-    headline.textContent = "ACCESO ANÓMALO";
-    sub.textContent = "Se detectaron eventos inesperados.";
+  const remaining = Math.max(0, 15 - elapsed);
+
+  timer.textContent =
+    "00:" + String(remaining).padStart(2, "0");
+
+  bar.style.width = (elapsed / 15 * 100) + "%";
+
+  if (elapsed === 4) {
+    document.getElementById("headline").textContent =
+      "FALLO CRÍTICO";
+    glitch();
   }
 
-  if (n === 5) {
-    headline.textContent = "FALLO CRÍTICO";
-    sub.textContent = "No se pudo completar la verificación.";
-    main.classList.add("glitch");
+  if (elapsed === 7) {
+    overlay.style.display = "flex";
   }
 
-  if (n <= 0) {
-    clearInterval(ticker);
-    clearInterval(writer);
-
+  if (elapsed === 11) {
+    overlay.style.display = "none";
     main.style.display = "none";
-    document.getElementById("footer").style.display = "none";
-    document.getElementById("end").style.display = "flex";
+    document.querySelector(".scanlines").style.display = "none";
+  }
+
+  if (elapsed === 15) {
+    clearInterval(clock);
+    clearInterval(writer);
+    finalScreen.style.display = "flex";
   }
 }, 1000);
 </script>
+
 </body>
 </html>
